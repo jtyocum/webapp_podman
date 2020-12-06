@@ -1,0 +1,12 @@
+---
+
+- hosts:  webapp
+  become: yes
+  become_method: sudo
+  tasks:
+    - import_role:
+        name: base
+    - import_role:
+        name: web
+    - import_role:
+        name: podman

@@ -1,0 +1,17 @@
+---
+
+- name: Add Kubic project repo key
+  apt_key:
+    url: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key
+    state: present
+    
+- name: Add Kubic project repo
+  apt_repository:
+    repo: deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /
+    state: present
+
+- name: Install Podman
+  apt:
+    state: latest
+    name: podman
+

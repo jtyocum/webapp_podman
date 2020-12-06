@@ -1,0 +1,16 @@
+---
+
+- name: Install UFW (Firewall)
+  apt:
+    state: present
+    name: ufw
+
+- name: Allow SSH (UFW)
+  ufw:
+    rule: allow
+    port: ssh
+
+- name: Set Default Deny Policy (UFW)
+  ufw:
+    state: enabled
+    policy: deny

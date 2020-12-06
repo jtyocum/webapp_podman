@@ -1,0 +1,9 @@
+---
+
+- import_tasks: ufw.yml
+- import_tasks: unattended-upgrades.yml
+- import_tasks: kspp_recommend.yml
+- import_tasks: module_sig_enforce.yml
+- import_tasks: blacklist-modules.yml
+- import_tasks: sshd.yml
+- import_tasks: packages.yml

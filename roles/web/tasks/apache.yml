@@ -1,0 +1,111 @@
+---
+
+- name: Enable Debian backports repo
+  apt_repository:
+    repo: deb http://deb.debian.org/debian buster-backports main
+    state: present
+
+- name: Install Apache from backports
+  apt:
+    state: latest
+    name: apache2
+    default_release: buster-backports
+
+- name: Allow HTTP (UFW)
+  ufw:
+    rule: allow
+    port: http
+
+- name: Allow HTTPS (UFW)
+  ufw:
+    rule: allow
+    port: https
+    
+- name: Restrict ServerTokens
+  notify: restart_apache
+  lineinfile:
+    path: /etc/apache2/conf-available/security.conf
+    regexp: '^ServerTokens'
+    line: ServerTokens Prod
+
+- name: Restrict ServerSignature
+  notify: restart_apache
+  lineinfile:
+    path: /etc/apache2/conf-available/security.conf
+    regexp: '^ServerSignature'
+    line: ServerSignature Off
+
+- name: Enable mod_rewrite
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: rewrite
+
+- name: Enable mod_http2
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: http2
+
+- name: Enable mod_watchdog
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: watchdog
+
+- name: Enable mod_ssl
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: ssl
+
+- name: Enable mod_md
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: md
+
+- name: Enable mod_proxy
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: proxy
+
+- name: Enable mod_proxy_http
+  notify: restart_apache
+  apache2_module:
+    state: present
+    name: proxy_http
+
+- name: Create DocumentRoot
+  file:
+    path: /srv/www
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Configure virtual host
+  notify: restart_apache
+  template:
+    src: vhost.j2
+    dest: /etc/apache2/sites-available/{{ vhost_domain }}.conf
+    owner: root
+    group: root
+    mode: '0644'
+  
+- name: Disable default virtual host
+  notify: restart_apache
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+
+- name: Enable virtual host
+  notify: restart_apache
+  file:
+    src: /etc/apache2/sites-available/{{ vhost_domain }}.conf
+    dest: /etc/apache2/sites-enabled/{{ vhost_domain }}.conf
+    state: link
+    owner: root
+    group: root
+    

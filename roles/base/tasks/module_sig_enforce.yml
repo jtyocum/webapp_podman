@@ -1,0 +1,10 @@
+---
+
+- name: kernel module signature enforcement
+  notify: update-grub
+  copy:
+    content: 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT module.sig_enforce=1"'
+    dest: /etc/default/grub.d/module_sig_enforce.cfg
+    owner: root
+    group: root
+    mode: 0644

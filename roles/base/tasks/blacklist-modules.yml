@@ -1,0 +1,17 @@
+---
+
+- name: Blacklist rare network protocols
+  copy:
+    src: blacklist-rare-network.conf
+    dest: /etc/modprobe.d/blacklist-rare-network.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Blacklist rare filesystems
+  copy:
+    src: blacklist-rare-fs.conf
+    dest: /etc/modprobe.d/blacklist-rare-fs.conf
+    owner: root
+    group: root
+    mode: '0644'
